@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
-	"encoding/base64"
 	"fmt"
 	"os"
+	"os/user"
 	"time"
 
 	"git.cloud.cluster.fun/AverageMarcus/kube-1password-secrets/internal/onepassword"
@@ -37,10 +37,8 @@ func main() {
 		panic(err)
 	}
 
-	secretsClient := clientset.CoreV1().Secrets(apiv1.NamespaceAll)
-
 	for {
-		list, err := secretsClient.List(context.Background(), metav1.ListOptions{})
+		list, err := clientset.CoreV1().Secrets(apiv1.NamespaceAll).List(context.Background(), metav1.ListOptions{})
 		if err != nil {
 			panic(err)
 		}
@@ -56,25 +54,21 @@ func main() {
 					continue
 				}
 
+				s.Data = make(map[string][]byte)
+
 				if item.Username != "" {
-					var username []byte
-					base64.StdEncoding.Encode(username, []byte(item.Username))
-					s.Data[keys["username"]] = username
+					s.Data[keys["username"]] = []byte(item.Username)
 				}
 
 				if item.Password != "" {
-					var password []byte
-					base64.StdEncoding.Encode(password, []byte(item.Password))
-					s.Data[keys["password"]] = password
+					s.Data[keys["password"]] = []byte(item.Password)
 				}
 
 				if item.SecretText != "" {
-					var secretText []byte
-					base64.StdEncoding.Encode(secretText, []byte(item.SecretText))
-					s.Data[keys["secretText"]] = secretText
+					s.Data[keys["secretText"]] = []byte(item.SecretText)
 				}
 
-				if _, err := secretsClient.Update(context.Background(), &s, metav1.UpdateOptions{}); err != nil {
+				if _, err := clientset.CoreV1().Secrets(s.GetNamespace()).Update(context.Background(), &s, metav1.UpdateOptions{}); err != nil {
 					fmt.Println("[ERROR] Could not update secret value", err)
 					continue
 				}
@@ -86,6 +80,12 @@ func main() {
 }
 
 func buildOpClient() (*onepassword.Client, error) {
+	usr, _ := user.Current()
+	err := os.Chmod(usr.HomeDir+"/.op", 0700)
+	if err != nil {
+		panic(err.Error())
+	}
+
 	domain, ok := os.LookupEnv("OP_DOMAIN")
 	if !ok {
 		return nil, fmt.Errorf("OP_DOMAIN not specified")
