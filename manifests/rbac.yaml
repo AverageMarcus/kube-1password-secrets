@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kube-1password-secrets
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kube-1password-secrets
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "list", "update"]
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kube-1password-secrets
+subjects:
+- kind: ServiceAccount
+  name: kube-1password-secrets
+roleRef:
+  kind: ClusterRole
+  name: kube-1password-secrets
+  apiGroup: rbac.authorization.k8s.io

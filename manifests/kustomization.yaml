@@ -1,0 +1,21 @@
+commonLabels:
+  app.kubernetes.io/name: kube-1password-secrets
+
+namespace: kube-system
+
+secretGenerator:
+- envs:
+  - .env
+  name: kube-1password-secrets
+
+images:
+- name: kube-1password-secrets
+  newName: docker.cloud.cluster.fun/averagemarcus/kube-1password-secrets
+  newTag: latest
+
+resources:
+- rbac.yaml
+- pvc.yaml
+- deployment.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization

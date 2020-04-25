@@ -47,7 +47,7 @@ ci:
 
 .PHONY: release # Release the latest version of the application
 release:
-	@echo "⚠️ 'release' unimplemented"
+	@cd manifests && kustomize edit set image kube-1password-secrets=$(IMAGE) && kustomize build | kubectl apply -f -
 
 .PHONY: help # Show this list of commands
 help:

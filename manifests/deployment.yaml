@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kube-1password-secrets
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kube-1password-secrets
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kube-1password-secrets
+    spec:
+      containers:
+      - image: kube-1password-secrets
+        name: kube-1password-secrets
+        env:
+        - name: OP_DOMAIN
+          valueFrom:
+            secretKeyRef:
+              name: kube-1password-secrets
+              key: OP_DOMAIN
+        - name: OP_EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: kube-1password-secrets
+              key: OP_EMAIL
+        - name: OP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: kube-1password-secrets
+              key: OP_PASSWORD
+        - name: OP_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: kube-1password-secrets
+              key: OP_SECRET_KEY
+        volumeMounts:
+        - mountPath: "/root/.op"
+          name: op
+      serviceAccountName: kube-1password-secrets
+      restartPolicy: Always
+      volumes:
+      - name: op
+        persistentVolumeClaim:
+          claimName: kube-1password-secrets
