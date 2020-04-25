@@ -16,3 +16,4 @@ lerna-debug.log*
 .vscode
 *.code-workspace
 .history/
+Dockerfile
