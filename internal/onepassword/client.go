@@ -77,7 +77,6 @@ func (op *Client) GetSecret(vault, secretID string) (*Secret, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	item := response{}
 	if err := json.Unmarshal(res, &item); err != nil {
 		return nil, err

@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
 	"os/user"
 	"time"
@@ -38,19 +39,21 @@ func main() {
 	}
 
 	for {
+		log.Println("[DEBUG] Syncing secrets")
 		list, err := clientset.CoreV1().Secrets(apiv1.NamespaceAll).List(context.Background(), metav1.ListOptions{})
 		if err != nil {
 			panic(err)
 		}
 		for _, s := range list.Items {
 			if passwordID, exists := s.ObjectMeta.Annotations[idAnnotation]; exists {
+				log.Printf("[INFO] Syncing secret %s with 1Password secret %s\n", s.GetName(), passwordID)
 				keys := parseAnnotations(s.ObjectMeta.Annotations)
 
 				vault := keys["vault"]
 
 				item, err := opClient.GetSecret(vault, passwordID)
 				if err != nil {
-					fmt.Println("[ERROR] Could not get secret", err)
+					log.Println("[ERROR] Could not get secret", err)
 					continue
 				}
 
@@ -69,7 +72,7 @@ func main() {
 				}
 
 				if _, err := clientset.CoreV1().Secrets(s.GetNamespace()).Update(context.Background(), &s, metav1.UpdateOptions{}); err != nil {
-					fmt.Println("[ERROR] Could not update secret value", err)
+					log.Println("[ERROR] Could not update secret value", err)
 					continue
 				}
 			}
