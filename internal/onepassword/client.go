@@ -106,8 +106,8 @@ func (op *Client) GetSecret(vault, secretID string) (*Secret, error) {
 		secret.Password = *item.Details.Password
 	}
 
-	if item.Details.Notes != nil {
-		secret.SecretText = *item.Details.Notes
+	if item.Details.Notes != "" {
+		secret.SecretText = item.Details.Notes
 	}
 
 	return secret, nil

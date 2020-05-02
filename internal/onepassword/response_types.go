@@ -11,7 +11,7 @@ type field struct {
 
 type details struct {
 	Fields   []field `json:"fields"`
-	Notes    *string `json:"notesPlain;omitempty"`
+	Notes    string  `json:"notesPlain"`
 	Password *string `json:"password;omitempty"`
 }
 
