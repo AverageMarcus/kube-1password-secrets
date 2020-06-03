@@ -10,7 +10,7 @@ secretGenerator:
 
 images:
 - name: kube-1password-secrets
-  newName: docker.cloud.cluster.fun/averagemarcus/kube-1password-secrets
+  newName: docker.cluster.fun/averagemarcus/kube-1password-secrets
   newTag: latest
 
 resources:
