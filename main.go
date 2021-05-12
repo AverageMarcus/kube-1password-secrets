@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"os/user"
+	"strings"
 	"time"
 
 	"git.cloud.cluster.fun/AverageMarcus/kube-1password-secrets/internal/onepassword"
@@ -16,11 +17,12 @@ import (
 )
 
 const (
-	idAnnotation         = "kube-1password"
-	vaultAnnotation      = "kube-1password/vault"
-	usernameAnnotation   = "kube-1password/username-key"
-	passwordAnnotation   = "kube-1password/password-key"
-	secretTextAnnotation = "kube-1password/secret-text-key"
+	idAnnotation              = "kube-1password"
+	vaultAnnotation           = "kube-1password/vault"
+	usernameAnnotation        = "kube-1password/username-key"
+	passwordAnnotation        = "kube-1password/password-key"
+	secretTextAnnotation      = "kube-1password/secret-text-key"
+	secretTextParseAnnotation = "kube-1password/secret-text-parse"
 )
 
 func main() {
@@ -68,7 +70,18 @@ func main() {
 				}
 
 				if item.SecretText != "" {
-					s.Data[keys["secretText"]] = []byte(item.SecretText)
+					if s.ObjectMeta.Annotations[secretTextParseAnnotation] != "" {
+						// Parse secret text as individual secrets
+						lines := strings.Split(item.SecretText, "\n")
+						for _, line := range lines {
+							parts := strings.Split(line, "=")
+							if len(parts) == 2 {
+								s.Data[parts[0]] = []byte(parts[1])
+							}
+						}
+					} else {
+						s.Data[keys["secretText"]] = []byte(item.SecretText)
+					}
 				}
 
 				if _, err := clientset.CoreV1().Secrets(s.GetNamespace()).Update(context.Background(), &s, metav1.UpdateOptions{}); err != nil {

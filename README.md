@@ -39,11 +39,12 @@ kind: Secret
 metadata:
   name: example-secret
   annotations:
-    kube-1password: 123456example7890       # [Required] This is the ID of the item within 1Password
-    kube-1password/vault: Kubernetes        # The name of the Vault
-    kube-1password/username-key: "user"     # The key the username should be saved as in the Secret resource (default: `username`)
-    kube-1password/password-key: "pass"     # The key the password should be saved as in the Secret resource (default: `password`)
-    kube-1password/secret-text-key: "note"  # The key the secret text should be saved as in the Secret resource (default: `secretText`)
+    kube-1password: 123456example7890           # [Required] This is the ID of the item within 1Password
+    kube-1password/vault: Kubernetes            # The name of the Vault
+    kube-1password/username-key: "user"         # The key the username should be saved as in the Secret resource (default: `username`)
+    kube-1password/password-key: "pass"         # The key the password should be saved as in the Secret resource (default: `password`)
+    kube-1password/secret-text-key: "note"      # The key the secret text should be saved as in the Secret resource (default: `secretText`)
+    kube-1password/secret-text-parse: "true"    # Parse the secret texts as individual secret values in format `key=value` (default: ``)
 type: Opaque
 ```
 
