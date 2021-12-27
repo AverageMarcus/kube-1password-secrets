@@ -74,7 +74,7 @@ func main() {
 						// Parse secret text as individual secrets
 						lines := strings.Split(item.SecretText, "\n")
 						for _, line := range lines {
-							parts := strings.Split(line, "=")
+							parts := strings.SplitN(line, "=", 2)
 							if len(parts) == 2 {
 								s.Data[parts[0]] = []byte(parts[1])
 							}
