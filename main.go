@@ -62,11 +62,11 @@ func main() {
 				s.Data = make(map[string][]byte)
 
 				if item.Username != "" {
-					s.Data[keys["username"]] = []byte(item.Username)
+					s.Data[keys["username"]] = []byte(parseNewlines(item.Username))
 				}
 
 				if item.Password != "" {
-					s.Data[keys["password"]] = []byte(item.Password)
+					s.Data[keys["password"]] = []byte(parseNewlines(item.Password))
 				}
 
 				if item.SecretText != "" {
@@ -76,11 +76,11 @@ func main() {
 						for _, line := range lines {
 							parts := strings.SplitN(line, "=", 2)
 							if len(parts) == 2 {
-								s.Data[parts[0]] = []byte(parts[1])
+								s.Data[parts[0]] = []byte(parseNewlines(parts[1]))
 							}
 						}
 					} else {
-						s.Data[keys["secretText"]] = []byte(item.SecretText)
+						s.Data[keys["secretText"]] = []byte(parseNewlines(item.SecretText))
 					}
 				}
 
@@ -144,4 +144,8 @@ func parseAnnotations(annotations map[string]string) map[string]string {
 	}
 
 	return keys
+}
+
+func parseNewlines(in string) string {
+	return strings.ReplaceAll(in, "\\n", "\n")
 }
