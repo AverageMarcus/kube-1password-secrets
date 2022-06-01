@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := default
 
-IMAGE ?= docker.cluster.fun/averagemarcus/kube-1password-secrets:latest
+IMAGE ?= rg.fr-par.scw.cloud/averagemarcus/kube-1password-secrets:latest
 
 .PHONY: test # Run all tests, linting and format checks
 test: lint check-format run-tests
