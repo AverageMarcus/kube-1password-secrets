@@ -93,8 +93,20 @@ func processSecret(s *apiv1.Secret) {
 
 		item, err := opClient.GetSecret(vault, passwordID)
 		if err != nil {
-			log.Println("[ERROR] Could not get secret", err)
-			return
+			if strings.Contains(err.Error(), "session expired") {
+				opClient, err = buildOpClient()
+				if err != nil {
+					panic(err.Error())
+				}
+				item, err = opClient.GetSecret(vault, passwordID)
+				if err != nil {
+					log.Println("[ERROR] Could not get secret", err)
+					return
+				}
+			} else {
+				log.Println("[ERROR] Could not get secret", err)
+				return
+			}
 		}
 
 		s.Data = make(map[string][]byte)
