@@ -148,24 +148,11 @@ func buildOpClient() (*onepassword.Client, error) {
 		panic(err.Error())
 	}
 
-	domain, ok := os.LookupEnv("OP_DOMAIN")
-	if !ok {
-		return nil, fmt.Errorf("OP_DOMAIN not specified")
-	}
-	email, ok := os.LookupEnv("OP_EMAIL")
-	if !ok {
-		return nil, fmt.Errorf("OP_EMAIL not specified")
-	}
-	password, ok := os.LookupEnv("OP_PASSWORD")
-	if !ok {
-		return nil, fmt.Errorf("OP_PASSWORD not specified")
-	}
-	secretKey, ok := os.LookupEnv("OP_SECRET_KEY")
-	if !ok {
-		return nil, fmt.Errorf("OP_SECRET_KEY not specified")
+	if _, ok := os.LookupEnv("OP_SERVICE_ACCOUNT_TOKEN"); !ok {
+		return nil, fmt.Errorf("OP_SERVICE_ACCOUNT_TOKEN not specified")
 	}
 
-	return onepassword.New(domain, email, password, secretKey)
+	return onepassword.New()
 }
 
 func parseAnnotations(annotations map[string]string) map[string]string {

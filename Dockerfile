@@ -8,9 +8,11 @@ RUN go mod download
 ADD . .
 RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="-w -s" -o kube-1password-secrets main.go
 
+FROM 1password/op:2 as OP
+
 FROM golang:1.14-alpine
 WORKDIR /app/
-COPY --from=builder /usr/local/bin/op /usr/local/bin/op
+COPY --from=op /usr/local/bin/op /usr/local/bin/op
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /app/kube-1password-secrets /app/kube-1password-secrets

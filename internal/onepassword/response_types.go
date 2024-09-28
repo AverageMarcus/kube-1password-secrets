@@ -5,23 +5,13 @@ import (
 )
 
 type field struct {
-	Name  string `json:"name"`
+	Name  string `json:"label"`
 	Value string `json:"value"`
 }
 
-type details struct {
-	Fields   []field `json:"fields"`
-	Notes    string  `json:"notesPlain"`
-	Password *string `json:"password;omitempty"`
-}
-
-type overview struct {
-	Title string `json:"title"`
-}
-
 type response struct {
-	UUID     string    `json:"uuid"`
-	Updated  time.Time `json:"createdAt"`
-	Details  details   `json:"details"`
-	Overview overview  `json:"overview"`
+	UUID    string    `json:"id"`
+	Updated time.Time `json:"created_at"`
+	Fields  []field   `json:"fields"`
+	Title   string    `json:"title"`
 }

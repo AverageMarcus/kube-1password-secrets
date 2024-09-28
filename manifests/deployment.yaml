@@ -16,26 +16,11 @@ spec:
       - image: kube-1password-secrets
         name: kube-1password-secrets
         env:
-        - name: OP_DOMAIN
+        - name: OP_SERVICE_ACCOUNT_TOKEN
           valueFrom:
             secretKeyRef:
               name: kube-1password-secrets
-              key: OP_DOMAIN
-        - name: OP_EMAIL
-          valueFrom:
-            secretKeyRef:
-              name: kube-1password-secrets
-              key: OP_EMAIL
-        - name: OP_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: kube-1password-secrets
-              key: OP_PASSWORD
-        - name: OP_SECRET_KEY
-          valueFrom:
-            secretKeyRef:
-              name: kube-1password-secrets
-              key: OP_SECRET_KEY
+              key: OP_SERVICE_ACCOUNT_TOKEN
         volumeMounts:
         - mountPath: "/root/.op"
           name: op
